@@ -78,15 +78,15 @@ class EntryQueryOptions
     public static function fromRequest(Request $request)
     {
         return (new static)
-            ->batchId($request->batch_id)
-            ->uuids($request->uuids)
-            ->beforeSequence($request->before)
-            ->tag($request->tag)
-            ->searchData($request->searchData)
-            ->fromDate($request->fromDate)
-            ->toDate($request->toDate)
-            ->familyHash($request->family_hash)
-            ->limit($request->take ?? 50);
+                ->batchId($request->batch_id)
+                ->uuids($request->uuids)
+                ->beforeSequence($request->before)
+                ->tag($request->tag)
+                ->searchData($request->searchData)
+                ->fromDate($request->fromDate)
+                ->toDate($request->toDate)
+                ->familyHash($request->family_hash)
+                ->limit($request->take ?? 50);
     }
 
     /**

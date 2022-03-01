@@ -120,10 +120,10 @@
         methods: {
             loadEntries(after){
                 axios.post(Telescope.basePath + '/telescope-api/' + this.resource +
-                    '?tag=' + this.tag +
-                    '&before=' + this.lastEntryIndex +
-                    '&take=' + this.entriesPerRequest +
-                    '&family_hash=' + this.familyHash +"&searchData=" + this.searchData+"&fromDate="+this.fromDate+"&toDate="+this.toDate
+                        '?tag=' + this.tag +
+                        '&before=' + this.lastEntryIndex +
+                        '&take=' + this.entriesPerRequest +
+                        '&family_hash=' + this.familyHash +"&searchData=" + this.searchData+"&fromDate="+this.fromDate+"&toDate="+this.toDate
                 ).then(response => {
                     this.lastEntryIndex = response.data.entries.length ? _.last(response.data.entries).sequence : this.lastEntryIndex;
 
@@ -133,7 +133,7 @@
 
                     if (_.isFunction(after)) {
                         after(
-                            this.familyHash || this.showAllFamily ? response.data.entries : _.uniqBy(response.data.entries, entry => entry.family_hash || _.uniqueId())
+                                this.familyHash || this.showAllFamily ? response.data.entries : _.uniqBy(response.data.entries, entry => entry.family_hash || _.uniqueId())
                         );
                     }
                 })
@@ -146,9 +146,9 @@
             checkForNewEntries(){
                 this.newEntriesTimeout = setTimeout(() => {
                     axios.post(Telescope.basePath + '/telescope-api/' + this.resource +
-                        '?tag=' + this.tag +
-                        '&take=1' +
-                        '&family_hash=' + this.familyHash+"&searchData=" + this.searchData+"&fromDate="+this.fromDate+"&toDate="+this.toDate
+                            '?tag=' + this.tag +
+                            '&take=1' +
+                            '&family_hash=' + this.familyHash+"&searchData=" + this.searchData+"&fromDate="+this.fromDate+"&toDate="+this.toDate
                     ).then(response => {
                         if (! this._isDestroyed) {
                             this.recordingStatus = response.data.status;
