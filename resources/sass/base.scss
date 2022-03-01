@@ -268,3 +268,10 @@ button:hover {
     color: #fff;
     background: $danger;
 }
+.input_date input#tj-datetime-input {
+    min-width: 198px;
+    width: 73%;
+    height: 35px;
+    padding: 3px;
+    border: 1px solid #ddd;
+}

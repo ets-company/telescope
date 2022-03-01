@@ -2,19 +2,25 @@
     import $ from 'jquery';
     import _ from 'lodash';
     import axios from 'axios';
-
+    import datetime from 'vuejs-datetimepicker';
     export default {
+        components: {
+            datetime
+        },
         props: [
             'resource', 'title', 'showAllFamily', 'hideSearch'
         ],
-
 
         /**
          * The component's data.
          */
         data() {
             return {
+                fromDate:'',
+                toDate:'',
+                format:'YYYY-MM-dd HH:i:s',
                 tag: '',
+                searchData: '',
                 familyHash: '',
                 entries: [],
                 ready: false,
@@ -76,6 +82,14 @@
 
 
         watch: {
+            fromDate: function (val,oldVal) {
+
+                this.search();
+            },
+            toDate: function (val,oldVal) {
+
+                this.search();
+            },
             '$route.query': function () {
                 clearTimeout(this.newEntriesTimeout);
 
@@ -106,10 +120,10 @@
         methods: {
             loadEntries(after){
                 axios.post(Telescope.basePath + '/telescope-api/' + this.resource +
-                        '?tag=' + this.tag +
-                        '&before=' + this.lastEntryIndex +
-                        '&take=' + this.entriesPerRequest +
-                        '&family_hash=' + this.familyHash
+                    '?tag=' + this.tag +
+                    '&before=' + this.lastEntryIndex +
+                    '&take=' + this.entriesPerRequest +
+                    '&family_hash=' + this.familyHash +"&searchData=" + this.searchData+"&fromDate="+this.fromDate+"&toDate="+this.toDate
                 ).then(response => {
                     this.lastEntryIndex = response.data.entries.length ? _.last(response.data.entries).sequence : this.lastEntryIndex;
 
@@ -119,7 +133,7 @@
 
                     if (_.isFunction(after)) {
                         after(
-                                this.familyHash || this.showAllFamily ? response.data.entries : _.uniqBy(response.data.entries, entry => entry.family_hash || _.uniqueId())
+                            this.familyHash || this.showAllFamily ? response.data.entries : _.uniqBy(response.data.entries, entry => entry.family_hash || _.uniqueId())
                         );
                     }
                 })
@@ -132,9 +146,9 @@
             checkForNewEntries(){
                 this.newEntriesTimeout = setTimeout(() => {
                     axios.post(Telescope.basePath + '/telescope-api/' + this.resource +
-                            '?tag=' + this.tag +
-                            '&take=1' +
-                            '&family_hash=' + this.familyHash
+                        '?tag=' + this.tag +
+                        '&take=1' +
+                        '&family_hash=' + this.familyHash+"&searchData=" + this.searchData+"&fromDate="+this.fromDate+"&toDate="+this.toDate
                     ).then(response => {
                         if (! this._isDestroyed) {
                             this.recordingStatus = response.data.status;
@@ -180,7 +194,7 @@
 
                     clearTimeout(this.newEntriesTimeout);
 
-                    this.$router.push({query: _.assign({}, this.$route.query, {tag: this.tag})});
+                    this.$router.push({query: _.assign({}, this.$route.query, {tag: this.tag,searchData:this.searchData,fromDate:this.fromDate,toDate:this.toDate})});
                 });
             },
 
@@ -261,20 +275,43 @@
                         }
                     }
                 };
+            },
+            focusOnSearchData(){
+                document.onkeyup = event => {
+                    if (event.which === 191 || event.keyCode === 191) {
+                        let searchInput2 = document.getElementById("searchInput2");
+
+                        if (searchInput2) {
+                            searchInput2.focus();
+                        }
+                    }
+                };
             }
+
         }
     }
 </script>
 
 <template>
     <div class="card">
+        <h5 class="px-3
+    pt-3">{{this.title}}</h5>
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h5>{{this.title}}</h5>
+
 
             <input type="text" class="form-control w-25"
                    v-if="!hideSearch && (tag || entries.length > 0)"
                    id="searchInput"
                    placeholder="Search Tag" v-model="tag" @input.stop="search">
+
+            <input type="text" class="form-control w-25"
+                   v-if="!hideSearch"
+                   id="searchInput2"
+                   placeholder="Search Text" v-model="searchData" @input.stop="search">
+
+            <datetime class="input_date" placeholder="From Date" v-if="!hideSearch" format="YYYY-MM-DD H:i:s" width="200px" v-model="fromDate" ></datetime>
+
+            <datetime class="input_date" placeholder="To Date" v-if="!hideSearch"  format="YYYY-MM-DD H:i:s" width="200px" v-model="toDate"  ></datetime>
         </div>
 
         <p v-if="recordingStatus !== 'enabled'" class="mt-0 mb-0 disabled-watcher d-flex align-items-center">
