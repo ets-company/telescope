@@ -30,6 +30,6 @@
         "vue-template-compiler": "^2.5.21"
     },
     "dependencies": {
-        "vuejs-datetimepicker": "^1.1.13"
+        "vue-the-mask": "^0.11.1"
     }
 }

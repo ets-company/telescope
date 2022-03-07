@@ -2,10 +2,10 @@
     import $ from 'jquery';
     import _ from 'lodash';
     import axios from 'axios';
-    import datetime from 'vuejs-datetimepicker';
+    import {TheMask} from 'vue-the-mask'
     export default {
         components: {
-            datetime
+            TheMask
         },
         props: [
             'resource', 'title', 'showAllFamily', 'hideSearch'
@@ -309,9 +309,10 @@
                    id="searchInput2"
                    placeholder="Search Text" v-model="searchData" @input.stop="search">
 
-            <datetime class="input_date" placeholder="From Date" v-if="!hideSearch" format="YYYY-MM-DD H:i:s" width="200px" v-model="fromDate" ></datetime>
+            <the-mask class="form-control w-25" mask="####/##/## ##:##:##" v-if="!hideSearch" type="text" :masked="true" v-model="fromDate" placeholder="YYYY/MM/DD H:m:s"></the-mask>
 
-            <datetime class="input_date" placeholder="To Date" v-if="!hideSearch"  format="YYYY-MM-DD H:i:s" width="200px" v-model="toDate"  ></datetime>
+            <the-mask class="form-control w-25" mask="####/##/## ##:##:##" v-if="!hideSearch" type="text" :masked="true" v-model="toDate" placeholder="YYYY/MM/DD H:m:s"></the-mask>
+
         </div>
 
         <p v-if="recordingStatus !== 'enabled'" class="mt-0 mb-0 disabled-watcher d-flex align-items-center">
